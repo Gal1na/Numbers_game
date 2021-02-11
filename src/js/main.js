@@ -26,11 +26,17 @@
 
     // потенциальная цель переноса, над которой мы пролетаем прямо сейчас
     let currentEnemy = null;
-    let mainHeroCoordinates = {};
 
+    let mainHeroCoordinates = playerCoordinates(mainHero);
     let enemy1Coordinates = playerCoordinates(enemy1);
     let enemy2Coordinates = playerCoordinates(enemy2);
     let enemy3Coordinates = playerCoordinates(enemy3);
+
+    let mainHeroS = {
+      "id" : "mainHero",
+      "points": pointsMainHero,
+      "coordinates": mainHeroCoordinates,
+    }
 
     let enemyList = {
       1: {
@@ -64,60 +70,67 @@
       function onMouseMove(event) {
         moveAt(event.pageX, event.pageY);
 
-        mainHeroCoordinates = playerCoordinates(mainHero);
-        //console.log(mainHeroCoordinates);
-
-        for (let key in enemyList) {
-          let enemyCoord = enemyList[key]["coordinates"];
-          let enemy = document.getElementById(enemyList[key]["id"]);
-         
-          if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
-             (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
-             (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
-             (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
-            enemy.style.background = 'yellow';
-          }
-        }
-
         mainHero.hidden = true;
         let elemBelow = document.elementFromPoint(event.clientX, event.clientY); // элемент, где координаты курсора на поле (не на герое)
         mainHero.hidden = false;
 
         if (!elemBelow) return; //если героя вынесли за пределы экрана
-
-        let enemy = elemBelow.closest('.hero--enemy'); //
-
-        currentEnemy = enemy;
-        if (currentEnemy) {
-          // логика обработки процесса, когда мы "влетаем" в элемент droppable
-          enterDroppable(currentEnemy);
-        }
       }
 
       document.addEventListener('mousemove', onMouseMove);
 
-      mainHero.onmouseup = function() {
+     /* mainHero.onmouseup = function() {
         document.removeEventListener('mousemove', onMouseMove);
         mainHero.onmouseup = null;
-      };
-    }    
+      };*/
+    };
 
-    function enterDroppable(elem) {
-      elem.style.background = 'pink';
+/*    mainHero.onmousemove = function(event) {
+      moveAt(event.pageX, event.pageY);
+
+      mainHero.hidden = true;
+      let elemBelow = document.elementFromPoint(event.clientX, event.clientY); // элемент, где координаты курсора на поле (не на герое)
+      mainHero.hidden = false;
+
+      if (!elemBelow) return; //если героя вынесли за пределы экрана
+    }*/
+
+    mainHero.onmouseup = function(event) {
+      mainHeroCoordinates = playerCoordinates(mainHero);
+      
+      for (let key in enemyList) {
+        let enemyCoord = enemyList[key]["coordinates"];
+        //let enemy = document.getElementById(enemyList[key]["id"]);
+        let enemy = enemyList[key];
+
+        if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
+         (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
+         (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
+         (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
+          battle(enemy);
+        } else {
+          document.querySelector('.game-over').classList.add('game-over--show');
+        }
+      }
+      /*document.removeEventListener('mousemove', onMouseMove);
+        mainHero.onmouseup = null;*/
+    }
+
+    function battle(elem) {
       console.log(elem);
 
-      playerCoordinates(elem); //координаты противника
-      playerCoordinates (mainHero); //координаты героя
-
-      pointsMain = pointsMain + parseInt(elem.innerText);
-      elem.hidden = true;
-      console.log(pointsMain);
-      mainHero.innerHTML = pointsMain;      
+      if (mainHeroS["points"] > elem["points"]) {
+        mainHeroS["points"] = mainHeroS["points"] + elem["points"];
+        console.log(mainHeroS["points"]);
+        document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
+        mainHeroS["coordinates"] = elem["coordinates"];
+        document.getElementById(elem["id"]).hidden = true;
+      }
     }
   });
 
   // ------ Functions ------
-  
+
   function playerCoordinates (el) {
     let coordinates = {
       "xL" : el.getBoundingClientRect().left,
