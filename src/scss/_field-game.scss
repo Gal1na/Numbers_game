@@ -23,6 +23,7 @@ body {
     top: 50%;
     left: 20%;
     background-color: blue;
+    z-index: 1000;
   }
 
   &--enemy {
