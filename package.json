@@ -1,0 +1,39 @@
+{
+  "name": "Design_Battles",
+  "version": "1.0.0",
+  "description": "My Gulp Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Galina",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.13",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^4.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-newer": "^1.4.0",
+    "gulp-notify": "^3.2.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-terser": "^1.2.0",
+    "through2": "^4.0.2",
+    "yargs": "^15.4.0"
+  },
+  "dependencies": {
+    "jquery": "^3.5.1",
+    "normalize-scss": "^7.0.1"
+  },
+  "browserslist": [
+    "last 3 versions",
+    ">0.5%",
+    "not dead"
+  ]
+}

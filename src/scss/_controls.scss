@@ -1,0 +1,233 @@
+%controls-transition {
+	-webkit-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,opacity .15s ease-in-out,-webkit-box-shadow .15s ease-in-out, visibility .15s ease-in-out;
+    -o-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,opacity .15s ease-in-out, visibility .15s ease-in-out;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,opacity .15s ease-in-out, visibility .15s ease-in-out;
+    cursor: pointer;
+}
+
+a,
+button,
+ {
+	@extend %controls-transition;
+}
+
+input {
+	&[type=button],
+	&[type=submit] {
+		 @extend %controls-transition;
+	}
+}
+
+a {
+	text-decoration: none;
+  color: $font-color-primary;
+}
+
+.btn {
+  position: relative;
+	display: inline-block;
+  min-width: 100%;
+  padding: 0.9em 1.35em;
+  font-size: 1.25rem;
+  font-weight: 300; 
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  background-color: #fff;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+
+  @media (min-width: $screen-sm-min) {
+    min-width: 170px;
+  }
+
+  &--primary {
+    background-color: #ff6033;
+    color: #ffffff;
+
+    &:focus {
+      outline: #f50000 solid 3px;
+    }
+
+    &:hover {
+      color: #ff6033;
+      background-color: #ffffff;
+      outline: #ff6033 solid 3px;
+    }
+
+    &:active {
+      background-color: #f13500;
+      color: #ffffff;
+    }
+
+  }
+
+  &--secondary {
+    background-color: #5585a2;
+    color: #ffffff;
+
+    &:focus {
+      outline: #7bcdff solid 3px;
+    }
+
+    &:hover {
+      color: #5585a2;
+      background-color: #ffffff;
+      outline: #5585a2 solid 2px;
+    }
+
+    &:active {
+      background-color: #306788;
+      color: #ffffff;
+    }
+  }
+
+  &--third {
+    background-color: #96b92c;
+    color: #ffffff;
+
+    &:focus {
+      outline: #ccf15b solid 3px;
+    }
+
+    &:hover {
+      background-color: #ffffff;
+      color: #96b92c;
+      outline: #96b92c solid 3px;
+    }
+
+    &:active {
+      background-color: #7d9c1f;
+      color: #ffffff;
+    }
+  }
+
+  &--fourth {
+    background-color: #f72b3f;
+    color: #ffffff;
+
+    &:focus {
+      outline: #ff8c8c solid 3px;
+    }
+
+    &:hover {
+      background-color: #ffffff;
+      color: #f72b3f;
+      outline: #f72b3f solid 3px;
+    }
+
+    &:active {
+      background-color: #d4081c;
+      color: #ffffff;
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.btn-services {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  padding: 18px clamp(78px, calc(25% + 18px), 118px) 18px 18px;
+  font-weight: 700;
+  text-transform: inherit;
+  line-height: 1.35;
+  white-space: normal;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
+
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    font-size: 17px;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: clamp(60px, 25%, 100px);
+    height: 100%;
+    border-left: 1px solid #9d9d9d;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 60%;
+  }
+
+  &--shopping:after {
+    background-image: url(/img/icon-shopping.svg);
+  }
+
+  &--product:after {
+    background-image: url(/img/icon-product.svg);
+  }
+
+  &--delivery:after {
+    background-image: url(/img/icon-delivery.svg);
+  }
+
+  &--organized:after {
+    background-image: url(/img/icon-organize.svg);
+  }
+
+  &:focus {
+    outline: #545dd6 solid 3px;
+  }
+
+  &:hover {
+    background-color: #c7dffb;
+    outline: #5c8ab3 solid 3px;
+  }
+
+  &:active {
+    background-color: #689fde;
+  }
+}
+
+.move-to {
+  display: block;
+  height: 40px;
+  width: 24px;
+  position: absolute;
+  bottom: 69px;
+  left: 50%;
+  margin-left: -12px;
+
+  &:focus {
+    opacity: 0.7;
+    outline: 1px solid gray;
+  }
+
+  &:hover {
+    opacity: 0.6;
+  }
+
+  &:active {
+    opacity: 0.8;
+    outline: 1px solid #ff6033;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    display: none;
+  }
+}
