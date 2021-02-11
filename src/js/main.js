@@ -1,7 +1,6 @@
 ;(function(){
 
-  $(document).ready(function() {
-    let mainHero = document.querySelector('.js-mainHero');
+  let mainHero = document.querySelector('.js-mainHero');
     let enemy1 = document.querySelector('.js-hero-enemy-1');
     let enemy2 = document.querySelector('.js-hero-enemy-2');
     let enemy3 = document.querySelector('.js-hero-enemy-3');
@@ -19,10 +18,6 @@
     enemy1.innerHTML = pointsEnemy1;
     enemy2.innerHTML = pointsEnemy2;
     enemy3.innerHTML = pointsEnemy3;
-
-    mainHero.ondragstart = function() {
-      return false;
-    };
 
     // потенциальная цель переноса, над которой мы пролетаем прямо сейчас
     let currentEnemy = null;
@@ -55,13 +50,15 @@
         "coordinates": enemy3Coordinates,
       },  
     }
+
+  $(document).ready(function() {
+    
     
     mainHero.onmousedown = function(event) {
 
       let shiftX = event.clientX - mainHero.getBoundingClientRect().left; //коорд курсора в герое
       let shiftY = event.clientY - mainHero.getBoundingClientRect().top;  //коорд курсора в герое
 
-      //координаты верхнего левого угла героя (xLeft,yTop)
       function moveAt(pageX, pageY) {
         mainHero.style.left = pageX - shiftX + 'px';
         mainHero.style.top = pageY - shiftY + 'px';
@@ -69,67 +66,56 @@
 
       function onMouseMove(event) {
         moveAt(event.pageX, event.pageY);
-
-        mainHero.hidden = true;
-        let elemBelow = document.elementFromPoint(event.clientX, event.clientY); // элемент, где координаты курсора на поле (не на герое)
-        mainHero.hidden = false;
-
-        if (!elemBelow) return; //если героя вынесли за пределы экрана
       }
 
       document.addEventListener('mousemove', onMouseMove);
 
-     /* mainHero.onmouseup = function() {
+      mainHero.onmouseup = function() {
         document.removeEventListener('mousemove', onMouseMove);
+        onMouseUp();
         mainHero.onmouseup = null;
-      };*/
+      };
     };
 
-/*    mainHero.onmousemove = function(event) {
-      moveAt(event.pageX, event.pageY);
-
-      mainHero.hidden = true;
-      let elemBelow = document.elementFromPoint(event.clientX, event.clientY); // элемент, где координаты курсора на поле (не на герое)
-      mainHero.hidden = false;
-
-      if (!elemBelow) return; //если героя вынесли за пределы экрана
-    }*/
-
-    mainHero.onmouseup = function(event) {
-      mainHeroCoordinates = playerCoordinates(mainHero);
-      
-      for (let key in enemyList) {
-        let enemyCoord = enemyList[key]["coordinates"];
-        //let enemy = document.getElementById(enemyList[key]["id"]);
-        let enemy = enemyList[key];
-
-        if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
-         (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
-         (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
-         (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
-          battle(enemy);
-        } else {
-          document.querySelector('.game-over').classList.add('game-over--show');
-        }
-      }
-      /*document.removeEventListener('mousemove', onMouseMove);
-        mainHero.onmouseup = null;*/
-    }
-
-    function battle(elem) {
-      console.log(elem);
-
-      if (mainHeroS["points"] > elem["points"]) {
-        mainHeroS["points"] = mainHeroS["points"] + elem["points"];
-        console.log(mainHeroS["points"]);
-        document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
-        mainHeroS["coordinates"] = elem["coordinates"];
-        document.getElementById(elem["id"]).hidden = true;
-      }
-    }
+    //Отключение Drag’n’Drop браузера
+    mainHero.ondragstart = function() {
+      return false;
+    };
   });
 
   // ------ Functions ------
+  //переназвать функцию
+  function onMouseUp() {
+    mainHeroCoordinates = playerCoordinates(mainHero);
+
+    for (let key in enemyList) {
+      let enemyCoord = enemyList[key]["coordinates"];
+      let enemy = enemyList[key];
+      console.log(key);
+
+      if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
+       (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
+       (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
+       (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
+        battle(enemy);
+        return;
+      } 
+    }
+  }
+
+  function battle(elem) {
+    console.log(elem);
+
+    if (mainHeroS["points"] > elem["points"]) {
+      mainHeroS["points"] = mainHeroS["points"] + elem["points"];
+      console.log(mainHeroS["points"]);
+      document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
+      mainHeroS["coordinates"] = elem["coordinates"];
+      document.getElementById(elem["id"]).hidden = true;
+    } else {
+      document.querySelector('.game-over').classList.add('game-over--show');
+    }
+  }
 
   function playerCoordinates (el) {
     let coordinates = {
