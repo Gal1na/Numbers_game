@@ -24,6 +24,7 @@ body {
     left: 20%;
     background-color: blue;
     z-index: 100;
+    cursor: pointer;
   }
 
   &--enemy {
@@ -59,20 +60,20 @@ body {
 }*/
 
 .game-over {
-  display: none;
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  bottom: 0;
+  top: calc(50% - 65px);
   z-index: 1000;
-  padding-top: 40%;
-  background-color: #0333cc;
   text-align: center;
-  font-size: 100px;
-  color: red;
+  font-size: 130px;
+  line-height: 1;
+  color: #8eff00;
+  transform: scale(0);
+  transition: 0.3s transform ease;
+  transition-delay: 0.5s;
 
   &--show {
-    display: block;
+    transform: scale(1);
   }
 }

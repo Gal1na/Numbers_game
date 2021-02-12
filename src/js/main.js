@@ -51,8 +51,7 @@
       },  
     }
 
-  $(document).ready(function() {
-    
+  $(document).ready(function() {    
     
     mainHero.onmousedown = function(event) {
 
@@ -72,20 +71,21 @@
 
       mainHero.onmouseup = function() {
         document.removeEventListener('mousemove', onMouseMove);
-        onMouseUp();
+        locationMainHero();
         mainHero.onmouseup = null;
       };
     };
 
-    //Отключение Drag’n’Drop браузера
+    // Disabling Drag'n'Drop Browser
     mainHero.ondragstart = function() {
       return false;
     };
   });
 
   // ------ Functions ------
-  //переназвать функцию
-  function onMouseUp() {
+
+  // Determining the location of the mainHero
+  function locationMainHero() {
     mainHeroCoordinates = playerCoordinates(mainHero);
 
     for (let key in enemyList) {
@@ -108,11 +108,12 @@
 
     if (mainHeroS["points"] > elem["points"]) {
       mainHeroS["points"] = mainHeroS["points"] + elem["points"];
-      console.log(mainHeroS["points"]);
       document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
       mainHeroS["coordinates"] = elem["coordinates"];
-      document.getElementById(elem["id"]).hidden = true;
+      document.getElementById(elem["id"]).hidden = true; //нужно удалять элемент!!
     } else {
+      elem["points"] = elem["points"] + mainHeroS["points"];
+      document.getElementById(mainHeroS["id"]).hidden = true;
       document.querySelector('.game-over').classList.add('game-over--show');
     }
   }
