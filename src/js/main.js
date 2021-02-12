@@ -1,13 +1,13 @@
 ;(function(){
 
-  let mainHero = document.querySelector('.js-mainHero');
+  let mainHero = document.querySelector('#mainHero');
   let playField = document.querySelector('.js-play-field');
   
   let enemyList = {};
-  let kolEnemy = 3;
+  let kolEnemy = 6;
   let pointsEnemy = [];
 
-  let pointsMainHero = getRndInteger(2, 10);
+  let pointsMainHero = getRandomInt(2, 10);
   let mainHeroCoordinates = getCoordinatesPlayer(mainHero);
   let mainHeroS = {
         "id" : "mainHero",
@@ -15,7 +15,7 @@
         "coordinates": mainHeroCoordinates,
       }       
 
-  $(document).ready(function() {
+  document.addEventListener("DOMContentLoaded", function(){
    
     mainHero.innerHTML = pointsMainHero;
 
@@ -60,7 +60,7 @@
 
   // ------ Functions ------
 
-  function getRndInteger(min, max) {
+  function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) ) + min;
   }
 
@@ -68,8 +68,7 @@
   function getXPositionOfEnemy() {
     let maxWidth = playField.getBoundingClientRect().width;
     let minWidth = maxWidth * 0.2 + 50;
-    let x_position = getRndInteger(minWidth - 1, maxWidth);
-    //let x_position = Math.floor(Math.random() * (maxWidth - minWidth + 1)) + minWidth;
+    let x_position = getRandomInt(minWidth - 1, maxWidth);
     if (x_position > maxWidth - 50) {
       x_position = x_position - 50;
     }
@@ -80,7 +79,7 @@
   function getYPositionOfEnemy() {
     let maxHeight = playField.getBoundingClientRect().height;
 
-    let y_position = getRndInteger(0, maxHeight);
+    let y_position = getRandomInt(0, maxHeight);
 
     if (y_position > maxHeight - 50) {
       y_position = y_position - 50;
@@ -95,7 +94,6 @@
     blockEnemy.classList.add('hero');
     blockEnemy.classList.add('hero--enemy');
     blockEnemy.classList.add('js-enemy-' + n);
-    //blockEnemy.id = id;
     blockEnemy.style.left = getXPositionOfEnemy() + 'px';
     blockEnemy.style.top = getYPositionOfEnemy() + 'px';
     playField.append(blockEnemy);
@@ -106,11 +104,10 @@
   function countPoints() {
     let sum = 0;
 
-    pointsEnemy[0] = getRndInteger(1, pointsMainHero);
-    
+    pointsEnemy[0] = getRandomInt(1, pointsMainHero);
     for (let i = 1; i <= kolEnemy - 1; i++) {
       sum = sum + pointsEnemy[i - 1];
-      pointsEnemy[i] = getRndInteger(pointsEnemy[i - 1] + 1, pointsMainHero + sum);
+      pointsEnemy[i] = getRandomInt(pointsEnemy[i - 1] + 1, pointsMainHero + sum);
     }
   }        
 
