@@ -31,24 +31,13 @@
     let test = {};
 
     for (let i = 1; i <= kolEnemy; i++) {
-      test[i] = { "id" : "enemy" + i,
+      test[i] = { "class" : "js-enemy-" + i,
                   "points" : pointsEnemy[i - 1],
+                  "coordinates" : playerCoordinates(createEnemy(i)),
                 };
     }
-    //console.log(test);
-
-    createEnemy();
-
-    function createEnemy() {
-      let blockEnemy = document.createElement('div');
-      blockEnemy.classList.add('hero');
-      blockEnemy.classList.add('hero--enemy');
-      blockEnemy.style.left = getXPositionOfEnemy() + 'px';
-      blockEnemy.style.top = getYPositionOfEnemy() + 'px';
-      console.log(blockEnemy.style.left);
-      console.log(blockEnemy.style.top);
-      document.querySelector('body').append(blockEnemy);
-    }
+    
+    writeDownPoints();    
 
     mainHero.innerHTML = pointsMainHero;
     enemy1.innerHTML = pointsEnemy1;
@@ -67,9 +56,7 @@
       "id" : "mainHero",
       "points": pointsMainHero,
       "coordinates": mainHeroCoordinates,
-    }
-
-    
+    }    
 
     let enemyList = {
       1: {
@@ -208,6 +195,28 @@
     } 
     return y_position;
   }
+
+  // Create an enemy
+  function createEnemy(n) {
+      let blockEnemy = document.createElement('div');
+      blockEnemy.classList.add('hero');
+      blockEnemy.classList.add('hero--enemy');
+      blockEnemy.classList.add('js-enemy-' + n);
+      //blockEnemy.id = id;
+      blockEnemy.style.left = getXPositionOfEnemy() + 'px';
+      blockEnemy.style.top = getYPositionOfEnemy() + 'px';
+      playField.append(blockEnemy);
+      return blockEnemy;
+    }
+
+  //Write down points  
+  function writeDownPoints() {
+    for (let i = 1; i <= kolEnemy; i++) {           
+      document.querySelector('.' + test[i]["class"]).innerHTML = test[i]["points"];
+    }
+  }
+
+
 })();
 
   
