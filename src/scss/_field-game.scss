@@ -32,7 +32,11 @@ body {
     left: 10%;
     background-color: blue;
     z-index: 100;
-    cursor: pointer;
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
   }
 
   &--enemy {
