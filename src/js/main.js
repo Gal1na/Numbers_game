@@ -1,18 +1,54 @@
 ;(function(){
 
   let mainHero = document.querySelector('.js-mainHero');
-    let enemy1 = document.querySelector('.js-hero-enemy-1');
-    let enemy2 = document.querySelector('.js-hero-enemy-2');
-    let enemy3 = document.querySelector('.js-hero-enemy-3');
-    let pointsMainHero;
-    let pointsEnemy1;
-    let pointsEnemy2;
-    let pointsEnemy3;
+  let kolEnemy = 3;
+  let playField = document.querySelector('.js-play-field');
+
+  let enemy1 = document.querySelector('.js-hero-enemy-1');
+  let enemy2 = document.querySelector('.js-hero-enemy-2');
+  let enemy3 = document.querySelector('.js-hero-enemy-3');
+  let pointsMainHero;
+  let pointsEnemy1;
+  let pointsEnemy2;
+  let pointsEnemy3;
 
     pointsMainHero = getRndInteger(2, 10);
     pointsEnemy1 = getRndInteger(1, pointsMainHero);
     pointsEnemy2 = getRndInteger(pointsEnemy1 + 1, pointsMainHero + pointsEnemy1);
     pointsEnemy3 = getRndInteger(pointsEnemy2 + 1, pointsMainHero + pointsEnemy1 + pointsEnemy2);
+
+    let pointsEnemy = [];
+    let sum = 0;
+    pointsEnemy[0] = getRndInteger(1, pointsMainHero);
+    
+    for (let i = 1; i <= kolEnemy - 1; i++) {
+      sum = sum + pointsEnemy[i - 1];
+      pointsEnemy[i] = getRndInteger(pointsEnemy[i - 1] + 1, pointsMainHero + sum);
+    }
+
+    //console.log (pointsEnemy);
+
+    let test = {};
+
+    for (let i = 1; i <= kolEnemy; i++) {
+      test[i] = { "id" : "enemy" + i,
+                  "points" : pointsEnemy[i - 1],
+                };
+    }
+    //console.log(test);
+
+    createEnemy();
+
+    function createEnemy() {
+      let blockEnemy = document.createElement('div');
+      blockEnemy.classList.add('hero');
+      blockEnemy.classList.add('hero--enemy');
+      blockEnemy.style.left = getXPositionOfEnemy() + 'px';
+      blockEnemy.style.top = getYPositionOfEnemy() + 'px';
+      console.log(blockEnemy.style.left);
+      console.log(blockEnemy.style.top);
+      document.querySelector('body').append(blockEnemy);
+    }
 
     mainHero.innerHTML = pointsMainHero;
     enemy1.innerHTML = pointsEnemy1;
@@ -32,6 +68,8 @@
       "points": pointsMainHero,
       "coordinates": mainHeroCoordinates,
     }
+
+    
 
     let enemyList = {
       1: {
@@ -145,6 +183,30 @@
 
   function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min) ) + min;
+  }
+
+  //Get random X coordinates of the browser window
+  function getXPositionOfEnemy() {
+    let maxWidth = playField.getBoundingClientRect().width;
+    let minWidth = maxWidth * 0.2 + 50;
+    let x_position = getRndInteger(minWidth - 1, maxWidth);
+    //let x_position = Math.floor(Math.random() * (maxWidth - minWidth + 1)) + minWidth;
+    if (x_position > maxWidth - 50) {
+      x_position = x_position - 50;
+    }
+    return x_position;
+  }
+
+  //Get random Y coordinates of the browser window
+  function getYPositionOfEnemy() {
+    let maxHeight = playField.getBoundingClientRect().height;
+
+    let y_position = getRndInteger(0, maxHeight);
+
+    if (y_position > maxHeight - 50) {
+      y_position = y_position - 50;
+    } 
+    return y_position;
   }
 })();
 
