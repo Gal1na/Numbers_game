@@ -72,6 +72,10 @@
       mainHero.onmouseup = function() {
         document.removeEventListener('mousemove', onMouseMove);
         locationMainHero();
+        if (isEmpty(enemyList)) {
+          document.querySelector('.victory').classList.add('victory--show');
+          document.querySelector('.game-over').classList.add('game-over--show');
+        }
         mainHero.onmouseup = null;
       };
     };
@@ -87,17 +91,17 @@
   // Determining the location of the mainHero
   function locationMainHero() {
     mainHeroCoordinates = playerCoordinates(mainHero);
-
+    
     for (let key in enemyList) {
       let enemyCoord = enemyList[key]["coordinates"];
       let enemy = enemyList[key];
-      console.log(key);
-
+      
       if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
        (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
        (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
        (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
         battle(enemy);
+        delete(enemyList[key]);
         return;
       } 
     }
@@ -109,8 +113,11 @@
     if (mainHeroS["points"] > elem["points"]) {
       mainHeroS["points"] = mainHeroS["points"] + elem["points"];
       document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
-      mainHeroS["coordinates"] = elem["coordinates"];
-      document.getElementById(elem["id"]).hidden = true; //нужно удалять элемент!!
+
+      mainHero.style.left = elem["coordinates"]["xL"] +'px';
+      mainHero.style.top = elem["coordinates"]["yT"] + 'px';
+
+      document.getElementById(elem["id"]).hidden = true;
     } else {
       elem["points"] = elem["points"] + mainHeroS["points"];
       document.getElementById(mainHeroS["id"]).hidden = true;
@@ -126,6 +133,14 @@
       "yB": el.getBoundingClientRect().bottom,
     };
     return coordinates;
+  }
+
+  // Test for emptiness
+  function isEmpty(obj) {
+    for (let key in obj) {
+      return false;
+    }
+    return true;
   }
 
   function getRndInteger(min, max) {

@@ -77,3 +77,22 @@ body {
     transform: scale(1);
   }
 }
+
+.victory {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(25%);
+  z-index: 1000;
+  text-align: center;
+  font-size: 100px;
+  line-height: 1;
+  color: #f06;
+  transform: scale(0);
+  transition: 0.3s transform ease;
+  transition-delay: 0.5s;
+
+  &--show {
+    transform: scale(1);
+  }
+}
