@@ -1,10 +1,11 @@
 ;(function(){
+  const mobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 
   let mainHero = document.querySelector('#mainHero');
   let playField = document.querySelector('.js-play-field');
   
   let enemyList = {};
-  let kolEnemy = 6;
+  let kolEnemy = 4;
   let pointsEnemy = [];
 
   let pointsMainHero = getRandomInt(2, 10);
@@ -16,7 +17,7 @@
       }
 
   let maxHeight = playField.getBoundingClientRect().height;
-  let maxWidth = playField.getBoundingClientRect().width;    
+  let maxWidth = playField.getBoundingClientRect().width;  
 
   document.addEventListener("DOMContentLoaded", function(){
    
@@ -27,36 +28,37 @@
     writePointsEnemy();
     
     mainHero.onmousedown = function(event) {
-      document.body.append(mainHero);
 
-      let shiftX = event.clientX - mainHero.getBoundingClientRect().left; 
-      let shiftY = event.clientY - mainHero.getBoundingClientRect().top;        
+      let shiftX = mobile ?
+                  e.touches[0].clientX - mainHero.getBoundingClientRect().left :
+                  event.clientX - mainHero.getBoundingClientRect().left; 
+      
+      let shiftY = mobile ?
+                  e.touches[0].clientY - mainHero.getBoundingClientRect().top :
+                  event.clientY - mainHero.getBoundingClientRect().top;      
 
-      function moveAt(pageX, pageY) {
-
+      function position(pageX, pageY) {
         let posX = pageX - shiftX;
         let posY = pageY - shiftY;
 
-        if (posX + 50 > maxWidth) {
-          posX = maxWidth - 50;
-        }
-        if (posY + 50 > maxHeight) {
-          posY = maxHeight - 50;
-        }
-        if (posX < 0) {
-          posX = 0;
-        }
-        if (posY < 0) {
-          posY = 0;
-        }
+        if (posX + 50 > maxWidth) {posX = maxWidth - 50;}
+        if (posY + 50 > maxHeight) {posY = maxHeight - 50;}
+        if (posX < 0) {posX = 0;}
+        if (posY < 0) {posY = 0;}
 
         mainHero.style.left = posX + 'px';
         mainHero.style.top = posY + 'px';
-      }
+      };
+
+      function moveAt(e) {
+        let x = mobile ? e.touches[0].clientX : e.clientX;
+        let y = mobile ? e.touches[0].clientY : e.clientY;
+        position(x,y);
+      };
 
       function onMouseMove(event) {
-        moveAt(event.pageX, event.pageY);
-      }
+        moveAt(event);
+      };
 
       document.addEventListener('mousemove', onMouseMove);
 
@@ -85,7 +87,6 @@
 
   //Get random X coordinates of the browser window
   function getXPositionOfEnemy() {
-    //let maxWidth = playField.getBoundingClientRect().width;
     let minWidth = maxWidth * 0.2 + 50;
     let x_position = getRandomInt(minWidth - 1, maxWidth);
     if (x_position > maxWidth - 50) {
@@ -96,8 +97,6 @@
 
   //Get random Y coordinates of the browser window
   function getYPositionOfEnemy() {
-//    let maxHeight = playField.getBoundingClientRect().height;
-
     let y_position = getRandomInt(0, maxHeight);
 
     if (y_position > maxHeight - 50) {
@@ -161,7 +160,6 @@
   // Determining the location of the mainHero
   function locationMainHero() {
     mainHeroCoordinates = getCoordinatesPlayer(mainHero);
-    
     for (let key in enemyList) {
       let enemyCoord = enemyList[key]["coordinates"];
       let enemy = enemyList[key];
