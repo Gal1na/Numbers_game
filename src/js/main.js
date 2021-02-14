@@ -1,31 +1,26 @@
 ;(function(){
-  const mobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+  const HERO_SIZE = 50;
 
-  let mainHero = document.querySelector('#mainHero');
+  let mobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|Windows Phone/i.test(navigator.userAgent);  
+
   let playField = document.querySelector('.js-play-field');
+  let playFieldHeight = playField.getBoundingClientRect().height;
+  let playFieldWidth = playField.getBoundingClientRect().width; 
   
-  let enemyList = {};
-  let kolEnemy = 4;
-  let pointsEnemy = [];
-
-  let pointsMainHero = getRandomInt(2, 10);
+  let mainHero = document.querySelector('#mainHero');
+  let mainHeroPoints = getRandomInt(2, 10);
   let mainHeroCoordinates = getCoordinatesPlayer(mainHero);
-  let mainHeroS = {
-        "id" : "mainHero",
-        "points": pointsMainHero,
-        "coordinates": mainHeroCoordinates,
-      }
-
-  let maxHeight = playField.getBoundingClientRect().height;
-  let maxWidth = playField.getBoundingClientRect().width;  
+  
+  let enemiesList = {};
+  let enemiesAmount = 4;
+  let enemiesPoints = [];     
 
   document.addEventListener("DOMContentLoaded", function(){
    
-    mainHero.innerHTML = pointsMainHero;
+    mainHero.innerHTML = mainHeroPoints;
 
-    countPoints();    
+    createEnemiesPoints();    
     createEnemyList();    
-    writePointsEnemy();
     
     function drag(event) {
       // Disabling Drag'n'Drop Browser
@@ -46,8 +41,8 @@
         let posX = pageX - shiftX;
         let posY = pageY - shiftY;
 
-        if (posX + 50 > maxWidth) {posX = maxWidth - 50;}
-        if (posY + 50 > maxHeight) {posY = maxHeight - 50;}
+        if (posX + HERO_SIZE > playFieldWidth) {posX = playFieldWidth - HERO_SIZE;}
+        if (posY + HERO_SIZE > playFieldHeight) {posY = playFieldHeight - HERO_SIZE;}
         if (posX < 0) {posX = 0;}
         if (posY < 0) {posY = 0;}
 
@@ -71,8 +66,8 @@
         }
         
         locationMainHero();
-        
-        if (isEmpty(enemyList)) {
+
+        if (isEmpty(enemiesList)) {
           document.querySelector('.victory').classList.add('victory--show');
           document.querySelector('.game-over').classList.add('game-over--show');
         }
@@ -108,64 +103,56 @@
     return Math.floor(Math.random() * (max - min) ) + min;
   }
 
-  //Get random X coordinates of the browser window
+  //Get random X coordinates of an enemy
   function getXPositionOfEnemy() {
-    let minWidth = maxWidth * 0.2 + 50;
-    let x_position = getRandomInt(minWidth - 1, maxWidth);
-    if (x_position > maxWidth - 50) {
-      x_position = x_position - 50;
+    let widthFieldMainHero = playFieldWidth * 0.2 + HERO_SIZE;
+    let x_position = getRandomInt(widthFieldMainHero, playFieldWidth);
+    if (x_position > playFieldWidth - HERO_SIZE) {
+      x_position = x_position - HERO_SIZE;
     }
     return x_position;
   }
 
-  //Get random Y coordinates of the browser window
+  //Get random Y coordinates of an enemy
   function getYPositionOfEnemy() {
-    let y_position = getRandomInt(0, maxHeight);
+    let y_position = getRandomInt(0, playFieldHeight);
 
-    if (y_position > maxHeight - 50) {
-      y_position = y_position - 50;
+    if (y_position > playFieldHeight - HERO_SIZE) {
+      y_position = y_position - HERO_SIZE;
     } 
     return y_position;
   }
 
   // Create an enemy
   function createEnemy(n) {
-    let blockEnemy = document.createElement('div');
+    let enemy = document.createElement('div');
 
-    blockEnemy.classList.add('hero');
-    blockEnemy.classList.add('hero--enemy');
-    blockEnemy.classList.add('js-enemy-' + n);
-    blockEnemy.style.left = getXPositionOfEnemy() + 'px';
-    blockEnemy.style.top = getYPositionOfEnemy() + 'px';
-    playField.append(blockEnemy);
-    return blockEnemy;
+    enemy.classList.add('hero', 'hero--enemy', 'js-enemy-' + n);
+    enemy.style.left = getXPositionOfEnemy() + 'px';
+    enemy.style.top = getYPositionOfEnemy() + 'px';
+    playField.append(enemy);
+    return enemy;
   }
 
-  // Count points for enemy
-  function countPoints() {
+  // Create an array of enemy points
+  function createEnemiesPoints() {
     let sum = 0;
-    pointsEnemy[0] = getRandomInt(1, pointsMainHero);
+    enemiesPoints[0] = getRandomInt(1, mainHeroPoints);
 
-    for (let i = 1; i <= kolEnemy - 1; i++) {
-      sum = sum + pointsEnemy[i - 1];
-      pointsEnemy[i] = getRandomInt(pointsEnemy[i - 1] + 1, pointsMainHero + sum);
+    for (let i = 1; i <= enemiesAmount - 1; i++) {
+      sum = sum + enemiesPoints[i - 1];
+      enemiesPoints[i] = getRandomInt(enemiesPoints[i - 1] + 1, mainHeroPoints + sum);
     }
   }        
 
-  //Write down points  
-  function writePointsEnemy() {
-    for (let i = 1; i <= kolEnemy; i++) {           
-      document.querySelector('.' + enemyList[i]["class"]).innerHTML = enemyList[i]["points"];
-    }
-  }
-
   // Create a list of enemies
   function createEnemyList() {
-    for (let i = 1; i <= kolEnemy; i++) {
-    enemyList[i] = { "class" : "js-enemy-" + i,
-                "points" : pointsEnemy[i - 1],
-                "coordinates" : getCoordinatesPlayer(createEnemy(i)),
-              };
+    for (let i = 1; i <= enemiesAmount; i++) {
+      enemiesList[i] = { "class" : "js-enemy-" + i,
+                  "points" : enemiesPoints[i - 1],
+                  "coordinates" : getCoordinatesPlayer(createEnemy(i)),
+      };
+      document.querySelector('.' + enemiesList[i]["class"]).innerHTML = enemiesList[i]["points"];
     }
   };  
 
@@ -183,16 +170,16 @@
   // Determining the location of the mainHero
   function locationMainHero() {
     mainHeroCoordinates = getCoordinatesPlayer(mainHero);
-    for (let key in enemyList) {
-      let enemyCoord = enemyList[key]["coordinates"];
-      let enemy = enemyList[key];
+    for (let key in enemiesList) {
+      let enemyCoord = enemiesList[key]["coordinates"];
+      let enemy = enemiesList[key];
       
       if ((mainHeroCoordinates["xL"] <= enemyCoord["xR"]) &&
        (mainHeroCoordinates["xR"] >= enemyCoord["xL"]) &&
        (mainHeroCoordinates["yT"] <= enemyCoord["yB"]) &&
        (mainHeroCoordinates["yB"] >= enemyCoord["yT"])) {
         battle(enemy);
-        delete(enemyList[key]);
+        delete(enemiesList[key]);
         return;
       } 
     }
@@ -201,17 +188,17 @@
   // Battle
   function battle(elem) {
     
-    if (mainHeroS["points"] > elem["points"]) {
-      mainHeroS["points"] = mainHeroS["points"] + elem["points"];
-      document.getElementById(mainHeroS["id"]).innerHTML = mainHeroS["points"];
+    if (mainHeroPoints > elem["points"]) {
+      mainHeroPoints = mainHeroPoints + elem["points"];
+      mainHero.innerHTML = mainHeroPoints;
 
       mainHero.style.left = elem["coordinates"]["xL"] +'px';
       mainHero.style.top = elem["coordinates"]["yT"] + 'px';
 
       document.querySelector('.' + elem["class"]).hidden = true;
     } else {
-      elem["points"] = elem["points"] + mainHeroS["points"];
-      document.getElementById(mainHeroS["id"]).hidden = true;
+      elem["points"] = elem["points"] + mainHeroPoints;
+      mainHero.hidden = true;
       document.querySelector('.game-over').classList.add('game-over--show');
     }
   }

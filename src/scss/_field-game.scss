@@ -42,21 +42,6 @@ body {
   &--enemy {
     background-color: red;
   }
-
-  &--enemy-1 {
-    top: 25%;
-    right: 20%;;
-  }
-
-  &--enemy-2 {
-    top: 50%;
-    right: 20%;;
-  }
-
-  &--enemy-3 {
-    top: 75%;
-    right: 20%;;
-  }
 }
 
 .game-over {
@@ -69,7 +54,7 @@ body {
   top: 0;
   bottom: 0;
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.8);
   text-align: center;
   font-size: 160px;
   color: #8eff00;
