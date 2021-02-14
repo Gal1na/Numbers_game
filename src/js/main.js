@@ -27,15 +27,14 @@
     createEnemyList();    
     writePointsEnemy();
     
-    mainHero.onmousedown = function(event) {
-
+    function drag() {
       let shiftX = mobile ?
-                  e.touches[0].clientX - mainHero.getBoundingClientRect().left :
-                  event.clientX - mainHero.getBoundingClientRect().left; 
-      
+      e.touches[0].clientX - mainHero.getBoundingClientRect().left :
+      event.clientX - mainHero.getBoundingClientRect().left; 
+
       let shiftY = mobile ?
-                  e.touches[0].clientY - mainHero.getBoundingClientRect().top :
-                  event.clientY - mainHero.getBoundingClientRect().top;      
+      e.touches[0].clientY - mainHero.getBoundingClientRect().top :
+      event.clientY - mainHero.getBoundingClientRect().top;      
 
       function position(pageX, pageY) {
         let posX = pageX - shiftX;
@@ -56,21 +55,41 @@
         position(x,y);
       };
 
-      function onMouseMove(event) {
-        moveAt(event);
-      };
-
-      document.addEventListener('mousemove', onMouseMove);
-
-      mainHero.onmouseup = function() {
-        document.removeEventListener('mousemove', onMouseMove);
+      function drop() {
+        if (mobile) {
+          document.removeEventListener("touchmove", moveAt);
+        } else {
+          document.removeEventListener('mousemove', moveAt);
+        }
+        
         locationMainHero();
         if (isEmpty(enemyList)) {
           document.querySelector('.victory').classList.add('victory--show');
           document.querySelector('.game-over').classList.add('game-over--show');
         }
-        mainHero.onmouseup = null;
-      };
+
+        if (mobile) {
+          document.addEventListener("touchend", drop);
+        } else {
+          document.removeEventListener('mousemove', drop);
+        }        
+      }
+    
+      // Add event listeners
+      if (mobile) {
+        document.addEventListener("touchmove", moveAt);
+        document.addEventListener("touchend", drop);
+      } else {
+        document.addEventListener('mousemove', moveAt);
+        document.addEventListener("mouseup", drop);
+      }
+    };
+
+    // Add event listeners
+    if (mobile) {
+      mainHero.addEventListener("touchstart", drag);
+    } else {
+      mainHero.addEventListener('mousedown', drag);
     };
 
     // Disabling Drag'n'Drop Browser
@@ -121,8 +140,8 @@
   // Count points for enemy
   function countPoints() {
     let sum = 0;
-
     pointsEnemy[0] = getRandomInt(1, pointsMainHero);
+
     for (let i = 1; i <= kolEnemy - 1; i++) {
       sum = sum + pointsEnemy[i - 1];
       pointsEnemy[i] = getRandomInt(pointsEnemy[i - 1] + 1, pointsMainHero + sum);
