@@ -71,11 +71,19 @@ body {
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.3);
   text-align: center;
-  font-size: 130px;
+  font-size: 160px;
   color: #8eff00;
   transform: scale(0);
   transition: 0.3s transform ease;
   transition-delay: 0.5s;
+
+  @media (max-width: $screen-sm-max) {
+    font-size: 120px;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    font-size: 70px;
+  }
 
   &--show {
     transform: scale(1);
@@ -84,7 +92,6 @@ body {
 
 .victory {
   display: none;
-  //font-size: 100px;
   line-height: 1;
   color: #f06;
   

@@ -27,14 +27,20 @@
     createEnemyList();    
     writePointsEnemy();
     
-    function drag() {
-      let shiftX = mobile ?
-      e.touches[0].clientX - mainHero.getBoundingClientRect().left :
-      event.clientX - mainHero.getBoundingClientRect().left; 
+    function drag(event) {
+      // Disabling Drag'n'Drop Browser
+      mainHero.ondragstart = function() {
+        return false;
+      };
+      event.preventDefault();
 
-      let shiftY = mobile ?
-      e.touches[0].clientY - mainHero.getBoundingClientRect().top :
-      event.clientY - mainHero.getBoundingClientRect().top;      
+      let shiftX = mobile
+        ? event.touches[0].clientX - mainHero.getBoundingClientRect().left
+        : event.clientX - mainHero.getBoundingClientRect().left; 
+
+      let shiftY = mobile
+        ? event.touches[0].clientY - mainHero.getBoundingClientRect().top
+        : event.clientY - mainHero.getBoundingClientRect().top;      
 
       function position(pageX, pageY) {
         let posX = pageX - shiftX;
@@ -55,6 +61,8 @@
         position(x,y);
       };
 
+      moveAt(event);
+
       function drop() {
         if (mobile) {
           document.removeEventListener("touchmove", moveAt);
@@ -63,15 +71,16 @@
         }
         
         locationMainHero();
+        
         if (isEmpty(enemyList)) {
           document.querySelector('.victory').classList.add('victory--show');
           document.querySelector('.game-over').classList.add('game-over--show');
         }
 
         if (mobile) {
-          document.addEventListener("touchend", drop);
+          document.removeEventListener("touchend", drop);
         } else {
-          document.removeEventListener('mousemove', drop);
+          document.removeEventListener('mouseup', drop);
         }        
       }
     
@@ -87,14 +96,9 @@
 
     // Add event listeners
     if (mobile) {
-      mainHero.addEventListener("touchstart", drag);
+      mainHero.addEventListener("touchstart", drag, { passive: false });
     } else {
       mainHero.addEventListener('mousedown', drag);
-    };
-
-    // Disabling Drag'n'Drop Browser
-    mainHero.ondragstart = function() {
-      return false;
     };
   });
 
