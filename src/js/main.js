@@ -11,8 +11,8 @@
   let mainHeroPoints = getRandomInt(2, 10);
   let mainHeroCoordinates = getCoordinatesPlayer(mainHero);
   
-  let enemiesList = {};
-  let enemiesAmount = 4;
+  let enemiesAmount = 5;
+  let enemiesList = {};  
   let enemiesPoints = [];     
 
   document.addEventListener("DOMContentLoaded", function(){
@@ -37,23 +37,10 @@
         ? event.touches[0].clientY - mainHero.getBoundingClientRect().top
         : event.clientY - mainHero.getBoundingClientRect().top;      
 
-      function position(pageX, pageY) {
-        let posX = pageX - shiftX;
-        let posY = pageY - shiftY;
-
-        if (posX + HERO_SIZE > playFieldWidth) {posX = playFieldWidth - HERO_SIZE;}
-        if (posY + HERO_SIZE > playFieldHeight) {posY = playFieldHeight - HERO_SIZE;}
-        if (posX < 0) {posX = 0;}
-        if (posY < 0) {posY = 0;}
-
-        mainHero.style.left = posX + 'px';
-        mainHero.style.top = posY + 'px';
-      };
-
       function moveAt(e) {
         let x = mobile ? e.touches[0].clientX : e.clientX;
         let y = mobile ? e.touches[0].clientY : e.clientY;
-        position(x,y);
+        moveMainHero(x,y,shiftX,shiftY);
       };
 
       moveAt(event);
@@ -167,6 +154,26 @@
     return coordinates;
   }
 
+  // Position mainHero when moving
+  function moveMainHero(pageX, pageY, offsetX, offsetY) {
+    let posX = pageX - offsetX;
+    let posY = pageY - offsetY;
+
+    if (posX + HERO_SIZE > playFieldWidth) {
+      posX = playFieldWidth - HERO_SIZE;
+    } else {
+      if (posX < 0) {posX = 0;}
+    }
+    if (posY + HERO_SIZE > playFieldHeight) {
+      posY = playFieldHeight - HERO_SIZE;
+    } else {
+      if (posY < 0) {posY = 0;}
+    }
+    
+    mainHero.style.left = posX + 'px';
+    mainHero.style.top = posY + 'px';
+  };
+
   // Determining the location of the mainHero
   function locationMainHero() {
     mainHeroCoordinates = getCoordinatesPlayer(mainHero);
@@ -186,35 +193,24 @@
   }
 
   // Battle
-  function battle(elem) {
+  function battle(rival) {
     
-    if (mainHeroPoints > elem["points"]) {
-      mainHeroPoints = mainHeroPoints + elem["points"];
+    if (mainHeroPoints > rival["points"]) {
+      mainHeroPoints = mainHeroPoints + rival["points"];
       mainHero.innerHTML = mainHeroPoints;
 
-      mainHero.style.left = elem["coordinates"]["xL"] +'px';
-      mainHero.style.top = elem["coordinates"]["yT"] + 'px';
+      mainHero.style.left = rival["coordinates"]["xL"] +'px';
+      mainHero.style.top = rival["coordinates"]["yT"] + 'px';
 
-      document.querySelector('.' + elem["class"]).hidden = true;
+      document.querySelector('.' + rival["class"]).remove();
     } else {
-      elem["points"] = elem["points"] + mainHeroPoints;
+      rival["points"] = rival["points"] + mainHeroPoints;
       mainHero.hidden = true;
       document.querySelector('.game-over').classList.add('game-over--show');
     }
   }
 
-  // Get coordinates of the player
-  function getCoordinatesPlayer (el) {
-    let coordinates = {
-      "xL" : el.getBoundingClientRect().left,
-      "xR" : el.getBoundingClientRect().right,
-      "yT" : el.getBoundingClientRect().top,
-      "yB": el.getBoundingClientRect().bottom,
-    };
-    return coordinates;
-  }
-
-  // Test for emptiness
+  // Checking for an empty object
   function isEmpty(obj) {
     for (let key in obj) {
       return false;
